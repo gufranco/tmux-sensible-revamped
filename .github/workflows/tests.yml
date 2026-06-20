@@ -1,0 +1,63 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install dependencies (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq bats tmux
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install bats-core tmux
+
+      - name: Run tests
+        run: make test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install shellcheck
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+
+      - name: Run shellcheck
+        run: make lint
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install test dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq bats tmux python3
+
+      - name: Build and install kcov
+        run: |
+          sudo apt-get install -y -qq cmake binutils-dev libcurl4-openssl-dev \
+            libdw-dev libiberty-dev zlib1g-dev libssl-dev g++
+          git clone --depth 1 https://github.com/SimonKagstrom/kcov.git /tmp/kcov
+          cmake -S /tmp/kcov -B /tmp/kcov/build -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/kcov/build -j"$(nproc)"
+          sudo cmake --install /tmp/kcov/build
+
+      - name: Measure coverage and enforce threshold
+        run: make coverage
