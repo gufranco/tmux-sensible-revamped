@@ -30,6 +30,19 @@ truecolor_supported() {
   esac
 }
 
+# extended_keys_terminal TERM TERM_PROGRAM -> 0 for terminals known to handle the
+# CSI u extended-keys protocol, so it is never forced on a terminal that garbles
+# the resulting sequences.
+extended_keys_terminal() {
+  case "${2}" in
+    iTerm.app|WezTerm|ghostty|mintty) return 0 ;;
+  esac
+  case "${1}" in
+    xterm*|*kitty*|foot*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 # os_kind UNAME PROC_VERSION -> darwin|wsl|linux|other.
 os_kind() {
   case "${1}" in
@@ -109,6 +122,7 @@ resolve_clipboard() { clipboard_command "${WAYLAND_DISPLAY:-}" "${DISPLAY:-}" "$
 export -f parse_tmux_version
 export -f version_ge
 export -f truecolor_supported
+export -f extended_keys_terminal
 export -f os_kind
 export -f is_iterm
 export -f editor_mode_keys

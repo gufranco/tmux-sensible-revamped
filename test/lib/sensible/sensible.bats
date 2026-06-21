@@ -36,6 +36,15 @@ teardown() {
   ! truecolor_supported ""
 }
 
+@test "sensible.sh - extended_keys_terminal recognizes capable terminals" {
+  extended_keys_terminal xterm-256color ""
+  extended_keys_terminal xterm-kitty ""
+  extended_keys_terminal "" iTerm.app
+  extended_keys_terminal "" WezTerm
+  ! extended_keys_terminal dumb ""
+  ! extended_keys_terminal screen-256color "Apple_Terminal"
+}
+
 @test "sensible.sh - os_kind classifies the host" {
   [[ "$(os_kind Darwin '')" == "darwin" ]]
   [[ "$(os_kind Linux 'Linux version 5.15 microsoft-standard-WSL2')" == "wsl" ]]

@@ -17,7 +17,7 @@ setup() {
   _key_unbound() { return 0; }
   _get_server_option() { echo ""; }
   _get_window_option() { echo ""; }
-  export EDITOR="" VISUAL="" COLORTERM="" TERM_PROGRAM="" LC_TERMINAL=""
+  export EDITOR="" VISUAL="" COLORTERM="" TERM_PROGRAM="" LC_TERMINAL="" TERM="xterm-256color"
   export WAYLAND_DISPLAY="" DISPLAY="" XDG_CONFIG_HOME=""
   export HOME="${TEST_TMPDIR}"
 }
@@ -65,6 +65,12 @@ teardown() {
   _tmux_version_string() { echo "tmux 3.0"; }
   run apply_sensible
   [[ "${output}" == *"Smulx"* ]]
+}
+
+@test "applier - extended-keys is skipped on unsupporting terminals" {
+  export TERM="dumb" TERM_PROGRAM=""
+  run apply_sensible
+  [[ "${output}" != *"extended-keys"* ]]
 }
 
 @test "applier - aggressive-resize is skipped under iTerm2" {

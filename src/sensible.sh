@@ -116,13 +116,13 @@ apply_sensible() {
     _emit set -g allow-passthrough on
   fi
 
-  # Extended keys (CSI u).
-  if version_ge "${ver}" 3.2; then
+  # Extended keys (CSI u), only on terminals that support the protocol.
+  if version_ge "${ver}" 3.2 && extended_keys_terminal "${TERM:-}" "${TERM_PROGRAM:-}"; then
     _emit set -s extended-keys on
     _emit set -as terminal-features "xterm*:extkeys"
-  fi
-  if version_ge "${ver}" 3.5; then
-    _emit set -s extended-keys-format csi-u
+    if version_ge "${ver}" 3.5; then
+      _emit set -s extended-keys-format csi-u
+    fi
   fi
 
   # Scrollback, messages, activity.
