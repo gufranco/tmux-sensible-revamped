@@ -91,10 +91,12 @@ apply_sensible() {
   # Terminal type and color.
   _set_default default-terminal "screen" "${dt}"
   _set_server_default default-terminal "screen" "${dt}"
-  if version_ge "${ver}" 3.2; then
-    _emit set -as terminal-features ",*:RGB"
-  elif truecolor_supported "${COLORTERM:-}"; then
-    _emit set -ga terminal-overrides ",*:Tc"
+  if truecolor_supported "${COLORTERM:-}"; then
+    if version_ge "${ver}" 3.2; then
+      _emit set -as terminal-features ",*:RGB"
+    else
+      _emit set -ga terminal-overrides ",*:Tc"
+    fi
   fi
   if version_ge "${ver}" 3.0; then
     _emit set -ga terminal-overrides ',*:Smulx=\E[4::%p1%dm'
