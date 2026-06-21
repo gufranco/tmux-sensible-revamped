@@ -16,6 +16,7 @@ setup() {
   _prefix() { echo "C-b"; }
   _key_unbound() { return 0; }
   _get_server_option() { echo ""; }
+  _get_window_option() { echo ""; }
   export EDITOR="" VISUAL="" COLORTERM="" TERM_PROGRAM="" LC_TERMINAL=""
   export WAYLAND_DISPLAY="" DISPLAY="" XDG_CONFIG_HOME=""
   export HOME="${TEST_TMPDIR}"
@@ -103,6 +104,19 @@ teardown() {
   export EDITOR="nvim"
   run apply_sensible
   [[ "${output}" == *"mode-keys vi"* ]]
+}
+
+@test "applier - mode-keys respects an explicit user choice" {
+  export EDITOR=""
+  _get_window_option() { case "$1" in mode-keys) echo "vi" ;; *) echo "" ;; esac; }
+  run apply_sensible
+  [[ "${output}" != *"mode-keys"* ]]
+}
+
+@test "applier - opinionated noisy options are not forced" {
+  run apply_sensible
+  [[ "${output}" != *"monitor-activity"* ]]
+  [[ "${output}" != *"set-titles"* ]]
 }
 
 @test "applier - macos reattach wrapper only when the helper is present" {

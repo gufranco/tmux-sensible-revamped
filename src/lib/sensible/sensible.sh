@@ -68,6 +68,7 @@ _proc_version() { cat /proc/version 2>/dev/null; }
 _has_terminfo() { infocmp "${1}" >/dev/null 2>&1; }
 _prefix() { tmux show-option -gv prefix 2>/dev/null; }
 _get_server_option() { tmux show-option -sqv "${1}" 2>/dev/null; }
+_get_window_option() { tmux show-option -wgqv "${1}" 2>/dev/null; }
 
 # _key_unbound KEY -> 0 when KEY has no prefix-table binding, so a user binding is
 # never clobbered. Mirrors upstream tmux-sensible's list-keys match.
@@ -118,6 +119,7 @@ export -f _proc_version
 export -f _has_terminfo
 export -f _prefix
 export -f _get_server_option
+export -f _get_window_option
 export -f _key_unbound
 export -f clipboard_command
 export -f tmux_version

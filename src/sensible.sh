@@ -43,6 +43,15 @@ _set_server_default() {
   fi
 }
 
+# _set_window_default OPT DEFAULT VALUE -> the window-scope counterpart.
+_set_window_default() {
+  local opt="${1}" def="${2}" val="${3}" cur
+  cur="$(_get_window_option "${opt}")"
+  if [[ -z "${cur}" || "${cur}" == "${def}" ]]; then
+    _emit setw -g "${opt}" "${val}"
+  fi
+}
+
 # _config_path -> the active tmux config file, XDG aware.
 _config_path() {
   if [[ -n "${XDG_CONFIG_HOME:-}" && -f "${XDG_CONFIG_HOME}/tmux/tmux.conf" ]]; then
@@ -122,8 +131,6 @@ apply_sensible() {
   _set_default status-interval 15 5
   _set_default repeat-time 500 600
   _emit set -g status-keys emacs
-  _emit set -g visual-activity off
-  _emit set -g monitor-activity on
 
   # Window and pane hygiene.
   _set_default base-index 0 1
@@ -134,14 +141,13 @@ apply_sensible() {
     _emit set -g renumber-windows on
   fi
   _emit setw -g automatic-rename on
-  _emit set -g set-titles on
-  _emit set -g set-titles-string "#I:#W"
   if [[ "${iterm}" -eq 0 ]]; then
     _emit setw -g aggressive-resize on
   fi
 
-  # Copy mode and clipboard bindings.
-  _emit setw -g mode-keys "${mk}"
+  # Copy mode and clipboard bindings. mode-keys follows the editor but never
+  # overrides an explicit user choice.
+  _set_window_default mode-keys emacs "${mk}"
   clip="$(resolve_clipboard)"
   _apply_copy_bindings "${clip}"
 

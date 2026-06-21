@@ -110,6 +110,7 @@ teardown() {
   run _has_terminfo xterm
   run _prefix
   run _get_server_option escape-time
+  run _get_window_option mode-keys
   run _key_unbound R
   true
 }
