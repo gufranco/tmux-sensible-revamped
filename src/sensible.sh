@@ -112,7 +112,11 @@ apply_sensible() {
   # Clipboard and OSC 52.
   _emit set -g set-clipboard on
   if version_ge "${ver}" 3.2; then
-    _emit set -as terminal-features ",*:clipboard"
+    # Safe capability declarations: clipboard, cursor color, cursor style, focus
+    # reporting, and title setting. Unlike RGB these never garble a terminal that
+    # lacks them, so they apply to every terminal.
+    _emit set -as terminal-features ",*:clipboard:ccolour:cstyle:focus:title"
+    _emit set -as terminal-features ",rxvt*:ignorefkeys"
   fi
   if version_ge "${ver}" 3.3; then
     _emit set -g allow-passthrough on

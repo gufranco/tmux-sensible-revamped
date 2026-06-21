@@ -29,7 +29,8 @@ teardown() {
 @test "applier - modern tmux 3.5 enables the full feature set" {
   run apply_sensible
   [[ "${output}" == *"set -as terminal-features ,*:RGB"* ]]
-  [[ "${output}" == *"set -as terminal-features ,*:clipboard"* ]]
+  [[ "${output}" == *"set -as terminal-features ,*:clipboard:ccolour:cstyle:focus:title"* ]]
+  [[ "${output}" == *"set -as terminal-features ,rxvt*:ignorefkeys"* ]]
   [[ "${output}" == *"set -g allow-passthrough on"* ]]
   [[ "${output}" == *"set -s extended-keys on"* ]]
   [[ "${output}" == *"set -s extended-keys-format csi-u"* ]]
