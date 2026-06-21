@@ -40,7 +40,7 @@ Options above your tmux version are skipped silently. The minimum is tmux 1.9, t
 | Window and pane | `base-index 1`, `pane-base-index 1`, `renumber-windows on`, `automatic-rename on`, `set-titles on`, `aggressive-resize on` (skipped under iTerm2) | 1.6 and 1.7 where noted |
 | Copy mode | `mode-keys` from `$EDITOR`, system-clipboard yank and mouse-drag bindings for vi and emacs keys | any |
 
-It also binds `prefix + R` to reload the config, resolving the path in XDG order, and installs the macOS `reattach-to-user-namespace` wrapper only when that legacy helper is present.
+It also carries over every default binding from upstream tmux-sensible, each set only when the key is still free: `prefix + R` reloads the config resolving the path in XDG order, the prefix letter switches to the last window, `C-p` and `C-n` move between windows, and `send-prefix` is wired when the prefix is not `C-b`. The macOS `reattach-to-user-namespace` wrapper is installed only when that legacy helper is present.
 
 ## Install
 

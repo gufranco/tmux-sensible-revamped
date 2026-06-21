@@ -34,6 +34,15 @@ _set_default() {
   fi
 }
 
+# _set_server_default OPT DEFAULT VALUE -> the server-scope counterpart.
+_set_server_default() {
+  local opt="${1}" def="${2}" val="${3}" cur
+  cur="$(_get_server_option "${opt}")"
+  if [[ -z "${cur}" || "${cur}" == "${def}" ]]; then
+    _emit set -sg "${opt}" "${val}"
+  fi
+}
+
 # _config_path -> the active tmux config file, XDG aware.
 _config_path() {
   if [[ -n "${XDG_CONFIG_HOME:-}" && -f "${XDG_CONFIG_HOME}/tmux/tmux.conf" ]]; then
@@ -63,15 +72,16 @@ _apply_copy_bindings() {
 
 # apply_sensible -> the full normalization pass.
 apply_sensible() {
-  local ver os dt mk clip conf iterm=0
+  local ver os dt mk clip conf prefix prefix_letter iterm=0
   ver="$(tmux_version)"
   os="$(current_os)"
   dt="$(default_terminal)"
   mk="$(editor_mode_keys "${EDITOR:-}${VISUAL:-}")"
-  is_iterm "${TERM_PROGRAM:-}" && iterm=1
+  is_iterm "${TERM_PROGRAM:-}" "${LC_TERMINAL:-}" && iterm=1
 
   # Terminal type and color.
   _set_default default-terminal "screen" "${dt}"
+  _set_server_default default-terminal "screen" "${dt}"
   if version_ge "${ver}" 3.2; then
     _emit set -as terminal-features ",*:RGB"
   elif truecolor_supported "${COLORTERM:-}"; then
@@ -83,7 +93,7 @@ apply_sensible() {
   fi
 
   # Latency and focus.
-  _emit set -sg escape-time 10
+  _set_server_default escape-time 500 10
   if version_ge "${ver}" 1.9; then
     _emit set -g focus-events on
   fi
@@ -141,9 +151,30 @@ apply_sensible() {
     _emit set -g default-command 'reattach-to-user-namespace -l $SHELL'
   fi
 
-  # Reload binding.
-  conf="$(_config_path)"
-  _emit bind-key R source-file "${conf}" ";" display-message "tmux-sensible-revamped: reloaded"
+  # Window navigation and prefix bindings, only when not already bound.
+  prefix="$(_prefix)"
+  prefix_letter="${prefix#*-}"
+  if [[ -n "${prefix}" && "${prefix}" != "C-b" ]]; then
+    _emit unbind-key C-b
+    if _key_unbound "${prefix}"; then
+      _emit bind-key "${prefix}" send-prefix
+    fi
+  fi
+  if [[ -n "${prefix_letter}" ]] && _key_unbound "${prefix_letter}"; then
+    _emit bind-key "${prefix_letter}" last-window
+  fi
+  if _key_unbound C-p; then
+    _emit bind-key C-p previous-window
+  fi
+  if _key_unbound C-n; then
+    _emit bind-key C-n next-window
+  fi
+
+  # Reload binding, only when R is free.
+  if _key_unbound R; then
+    conf="$(_config_path)"
+    _emit bind-key R source-file "${conf}" ";" display-message "tmux-sensible-revamped: reloaded"
+  fi
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then

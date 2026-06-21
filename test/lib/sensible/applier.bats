@@ -13,7 +13,10 @@ setup() {
   _uname() { echo "Linux"; }
   _proc_version() { echo "generic"; }
   _has_terminfo() { return 0; }
-  export EDITOR="" VISUAL="" COLORTERM="" TERM_PROGRAM=""
+  _prefix() { echo "C-b"; }
+  _key_unbound() { return 0; }
+  _get_server_option() { echo ""; }
+  export EDITOR="" VISUAL="" COLORTERM="" TERM_PROGRAM="" LC_TERMINAL=""
   export WAYLAND_DISPLAY="" DISPLAY="" XDG_CONFIG_HOME=""
   export HOME="${TEST_TMPDIR}"
 }
@@ -109,9 +112,44 @@ teardown() {
   [[ "${output}" == *"reattach-to-user-namespace -l \$SHELL"* ]]
 }
 
-@test "applier - reload binding is emitted" {
+@test "applier - reload binding is emitted when R is free" {
   run apply_sensible
   [[ "${output}" == *"bind-key R source-file"* ]]
+}
+
+@test "applier - binds window navigation when unbound" {
+  run apply_sensible
+  [[ "${output}" == *"bind-key b last-window"* ]]
+  [[ "${output}" == *"bind-key C-p previous-window"* ]]
+  [[ "${output}" == *"bind-key C-n next-window"* ]]
+}
+
+@test "applier - binds send-prefix for a custom prefix" {
+  _prefix() { echo "C-a"; }
+  run apply_sensible
+  [[ "${output}" == *"unbind-key C-b"* ]]
+  [[ "${output}" == *"bind-key C-a send-prefix"* ]]
+  [[ "${output}" == *"bind-key a last-window"* ]]
+}
+
+@test "applier - existing user bindings are respected" {
+  _key_unbound() { return 1; }
+  run apply_sensible
+  [[ "${output}" != *"bind-key C-p"* ]]
+  [[ "${output}" != *"bind-key C-n"* ]]
+  [[ "${output}" != *"bind-key R source-file"* ]]
+}
+
+@test "applier - escape-time respects an explicit user value" {
+  _get_server_option() { case "$1" in escape-time) echo "100" ;; *) echo "" ;; esac; }
+  run apply_sensible
+  [[ "${output}" != *"escape-time 10"* ]]
+}
+
+@test "applier - iTerm via LC_TERMINAL skips aggressive-resize" {
+  export LC_TERMINAL="iTerm2"
+  run apply_sensible
+  [[ "${output}" != *"aggressive-resize"* ]]
 }
 
 @test "applier - _emit runs tmux outside dry-run mode" {

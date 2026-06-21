@@ -43,10 +43,12 @@ teardown() {
   [[ "$(os_kind FreeBSD '')" == "other" ]]
 }
 
-@test "sensible.sh - is_iterm detects iTerm2" {
-  is_iterm "iTerm.app"
-  ! is_iterm "Apple_Terminal"
-  ! is_iterm ""
+@test "sensible.sh - is_iterm detects iTerm2 via either signal" {
+  is_iterm "iTerm.app" ""
+  is_iterm "iTerm2" ""
+  is_iterm "" "iTerm2"
+  ! is_iterm "Apple_Terminal" ""
+  ! is_iterm "" ""
 }
 
 @test "sensible.sh - editor_mode_keys maps vi family to vi" {
@@ -106,5 +108,8 @@ teardown() {
   run _uname
   run _proc_version
   run _has_terminfo xterm
+  run _prefix
+  run _get_server_option escape-time
+  run _key_unbound R
   true
 }

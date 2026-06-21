@@ -44,9 +44,12 @@ os_kind() {
   esac
 }
 
-# is_iterm TERM_PROGRAM -> 0 when running under iTerm2.
+# is_iterm TERM_PROGRAM LC_TERMINAL -> 0 when running under iTerm2, matching
+# either signal the way upstream tmux-sensible does.
 is_iterm() {
-  [[ "${1}" == "iTerm.app" ]]
+  case "${1}" in iTerm*) return 0 ;; esac
+  case "${2}" in iTerm*) return 0 ;; esac
+  return 1
 }
 
 # editor_mode_keys EDITOR_VALUE -> vi when the editor is a vi family, else emacs.
@@ -63,6 +66,15 @@ _have() { command -v "${1}" >/dev/null 2>&1; }
 _uname() { uname -s 2>/dev/null; }
 _proc_version() { cat /proc/version 2>/dev/null; }
 _has_terminfo() { infocmp "${1}" >/dev/null 2>&1; }
+_prefix() { tmux show-option -gv prefix 2>/dev/null; }
+_get_server_option() { tmux show-option -sqv "${1}" 2>/dev/null; }
+
+# _key_unbound KEY -> 0 when KEY has no prefix-table binding, so a user binding is
+# never clobbered. Mirrors upstream tmux-sensible's list-keys match.
+_key_unbound() {
+  local key="${1//\\/\\\\}"
+  ! tmux list-keys 2>/dev/null | grep -q "bind-key[[:space:]]\+\(-r[[:space:]]\+\)\?\(-T prefix[[:space:]]\+\)\?${key}[[:space:]]"
+}
 
 # clipboard_command WAYLAND DISPLAY OS -> the system copy command, or empty when
 # none is available and OSC 52 must carry the clipboard. Priority: Wayland, WSL,
@@ -104,6 +116,9 @@ export -f _have
 export -f _uname
 export -f _proc_version
 export -f _has_terminfo
+export -f _prefix
+export -f _get_server_option
+export -f _key_unbound
 export -f clipboard_command
 export -f tmux_version
 export -f current_os

@@ -21,3 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   clipboard over SSH, and iTerm2 aggressive-resize breakage.
 - Non-destructive defaults: preference options are applied only when still at the
   tmux default, so explicit user configuration is preserved.
+- Full upstream tmux-sensible parity: every option plus all default key bindings
+  (send-prefix, last-window, previous and next window, reload), each applied only
+  when the key or option is still unset.
