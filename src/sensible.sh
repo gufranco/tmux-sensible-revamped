@@ -135,7 +135,7 @@ apply_sensible() {
   _set_default history-limit 2000 50000
   _set_default display-time 750 4000
   _set_default status-interval 15 5
-  _set_default repeat-time 500 600
+  _set_default repeat-time 500 1000
   _emit set -g status-keys emacs
 
   # Window and pane hygiene.

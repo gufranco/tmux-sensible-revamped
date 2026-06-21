@@ -36,7 +36,7 @@ Options above your tmux version are skipped silently. The minimum is tmux 1.9, t
 | Underlines | undercurl and colored underline overrides (`Smulx`, `Setulc`) | 3.0 |
 | Clipboard and capabilities | `set-clipboard on`, `allow-passthrough on`, and the `clipboard`, cursor color, cursor style, focus, and title terminal features | on any, 3.2, 3.3 |
 | Extended keys | `extended-keys on` on terminals that support CSI u, the `extkeys` feature, `extended-keys-format csi-u` | 3.2, 3.5 for the format |
-| Scrollback and status | `history-limit 50000`, `display-time 4000`, `status-interval 5`, `repeat-time 600` | any |
+| Scrollback and status | `history-limit 50000`, `display-time 4000`, `status-interval 5`, `repeat-time 1000` | any |
 | Window and pane | `base-index 1`, `pane-base-index 1`, `renumber-windows on`, `automatic-rename on`, `aggressive-resize on` (skipped under iTerm2) | 1.6 and 1.7 where noted |
 | Copy mode | `mode-keys` from `$EDITOR`, system-clipboard yank and mouse-drag bindings for vi and emacs keys | any |
 
