@@ -8,7 +8,7 @@
 
 </div>
 
-**30+** normalized settings · **tmux 1.9 to 3.5** · **Linux, macOS, WSL** · **54** tests · **95%+** coverage
+**30+** normalized settings · **tmux 1.9 to 3.5** · **Linux, macOS, WSL** · **63** tests · **95%+** coverage
 
 One config that behaves the same regardless of the tmux version, the operating system, the terminal emulator, and what is running inside the pane. Every option is gated to the tmux versions that support it, so the same plugin runs cleanly on every tmux TPM supports, from 1.9 up. Truecolor, the system clipboard, undercurl, and extended keys are enabled per detected capability, and several long-standing terminal bugs are worked around. Your own explicit settings always win.
 
@@ -36,8 +36,8 @@ Options above your tmux version are skipped silently. The minimum is tmux 1.9, t
 | Underlines | undercurl and colored underline overrides (`Smulx`, `Setulc`) | 3.0 |
 | Clipboard | `set-clipboard on`, the `clipboard` terminal feature, `allow-passthrough on` | on any, 3.2, 3.3 |
 | Extended keys | `extended-keys on` on terminals that support CSI u, the `extkeys` feature, `extended-keys-format csi-u` | 3.2, 3.5 for the format |
-| Scrollback and status | `history-limit 50000`, `display-time 4000`, `status-interval 5`, `repeat-time 600`, `monitor-activity on`, `visual-activity off` | any |
-| Window and pane | `base-index 1`, `pane-base-index 1`, `renumber-windows on`, `automatic-rename on`, `set-titles on`, `aggressive-resize on` (skipped under iTerm2) | 1.6 and 1.7 where noted |
+| Scrollback and status | `history-limit 50000`, `display-time 4000`, `status-interval 5`, `repeat-time 600` | any |
+| Window and pane | `base-index 1`, `pane-base-index 1`, `renumber-windows on`, `automatic-rename on`, `aggressive-resize on` (skipped under iTerm2) | 1.6 and 1.7 where noted |
 | Copy mode | `mode-keys` from `$EDITOR`, system-clipboard yank and mouse-drag bindings for vi and emacs keys | any |
 
 It also carries over every default binding from upstream tmux-sensible, each set only when the key is still free: `prefix + R` reloads the config resolving the path in XDG order, the prefix letter switches to the last window, `C-p` and `C-n` move between windows, and `send-prefix` is wired when the prefix is not `C-b`. The macOS `reattach-to-user-namespace` wrapper is installed only when that legacy helper is present.
@@ -62,6 +62,7 @@ run-shell ~/.tmux/plugins/tmux-sensible-revamped/sensible-revamped.tmux
 ## Behavior notes
 
 - **Your config wins.** Scrollback, display time, status interval, repeat time, base index, and the terminal type are applied only when still at the tmux default, so a value you set yourself is left alone.
+- **Nothing noisy is forced.** It does not touch activity monitoring, the title format, or the mouse, so your own choices there are never overridden.
 - **Mouse stays off.** Enabling the mouse breaks terminal-native selection for many users, so this plugin does not touch it.
 - **Prefix is untouched.** It keeps `C-b`, matching upstream tmux-sensible.
 - **Clipboard order.** The copy command is chosen by environment: Wayland `wl-copy`, WSL `clip.exe`, macOS `pbcopy`, X11 `xclip` then `xsel`. With none available it relies on `set-clipboard on` and OSC 52, which also carries the clipboard back over SSH.
