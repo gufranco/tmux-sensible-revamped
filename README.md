@@ -37,7 +37,7 @@ Options above your tmux version are skipped silently. The minimum is tmux 1.9, t
 | Clipboard and capabilities | `set-clipboard on`, `allow-passthrough on`, and the `clipboard`, cursor color, cursor style, focus, and title terminal features | on any, 3.2, 3.3 |
 | Extended keys | `extended-keys on` on terminals that support CSI u, the `extkeys` feature, `extended-keys-format csi-u` | 3.2, 3.5 for the format |
 | Scrollback and status | `history-limit 50000`, `display-time 4000`, `status-interval 5`, `repeat-time 1000` | any |
-| Window and pane | `base-index 1`, `pane-base-index 1`, `renumber-windows on`, `automatic-rename on`, `aggressive-resize on` (skipped under iTerm2) | 1.6 and 1.7 where noted |
+| Window and pane | `base-index 1`, `pane-base-index 1`, `renumber-windows on`, `automatic-rename on`, `aggressive-resize on` for normal clients, off under iTerm2 control mode | 1.6 and 1.7 where noted |
 | Copy mode | `mode-keys` from `$EDITOR`, system-clipboard yank and mouse-drag bindings for vi and emacs keys | any |
 
 It also carries over every default binding from upstream tmux-sensible, each set only when the key is still free: `prefix + R` reloads the config resolving the path in XDG order, the prefix letter switches to the last window, `C-p` and `C-n` move between windows, and `send-prefix` is wired when the prefix is not `C-b`. The macOS `reattach-to-user-namespace` wrapper is installed only when that legacy helper is present.
@@ -75,7 +75,7 @@ run-shell ~/.tmux/plugins/tmux-sensible-revamped/sensible-revamped.tmux
 | Truecolor not working inside tmux | `default-terminal tmux-256color` plus the `RGB` capability, not a non-256 terminal type |
 | Italics rendering as reverse video | `tmux-256color` instead of `screen-256color` |
 | Clipboard not propagating over SSH | `set-clipboard on` and the OSC 52 `clipboard` feature |
-| iTerm2 native integration breaking on resize | `aggressive-resize` is skipped under iTerm2 |
+| iTerm2 native integration breaking on resize | `aggressive-resize` is off only under iTerm2 control mode (a client-attached hook on tmux 3.0+), on everywhere else |
 | Apple Terminal.app | left at 256 colors, since it has neither truecolor nor OSC 52 |
 
 ## Compatibility

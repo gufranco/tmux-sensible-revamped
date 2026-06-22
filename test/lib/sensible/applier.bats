@@ -81,16 +81,20 @@ teardown() {
   [[ "${output}" != *"extended-keys"* ]]
 }
 
-@test "applier - aggressive-resize is skipped under iTerm2" {
+@test "applier - aggressive-resize on tmux 3.0+ is a control-mode hook" {
   export TERM_PROGRAM="iTerm.app"
   run apply_sensible
-  [[ "${output}" != *"aggressive-resize"* ]]
+  [[ "${output}" == *"set-hook -g client-attached[1000]"* ]]
+  [[ "${output}" == *"client_control_mode"* ]]
+  [[ "${output}" == *"aggressive-resize off"* ]]
+  [[ "${output}" == *"aggressive-resize on"* ]]
 }
 
-@test "applier - aggressive-resize is set off iTerm2" {
-  export TERM_PROGRAM="Apple_Terminal"
+@test "applier - older tmux sets aggressive-resize on outside iTerm2" {
+  _tmux_version_string() { echo "tmux 2.9"; }
   run apply_sensible
   [[ "${output}" == *"aggressive-resize on"* ]]
+  [[ "${output}" != *"client-attached"* ]]
 }
 
 @test "applier - explicit user configuration is respected" {
@@ -174,7 +178,8 @@ teardown() {
   [[ "${output}" != *"escape-time 10"* ]]
 }
 
-@test "applier - iTerm via LC_TERMINAL skips aggressive-resize" {
+@test "applier - older tmux skips aggressive-resize under iTerm2 via LC_TERMINAL" {
+  _tmux_version_string() { echo "tmux 2.9"; }
   export LC_TERMINAL="iTerm2"
   run apply_sensible
   [[ "${output}" != *"aggressive-resize"* ]]

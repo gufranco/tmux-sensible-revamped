@@ -147,7 +147,14 @@ apply_sensible() {
     _emit set -g renumber-windows on
   fi
   _emit setw -g automatic-rename on
-  if [[ "${iterm}" -eq 0 ]]; then
+  # aggressive-resize on for normal clients, off under iTerm2's native tmux
+  # integration (control mode), where it makes iTerm2 refuse to attach. On tmux
+  # 3.0+ a client-attached hook decides per client, so plain tmux gets it in every
+  # terminal and control mode stays safe without ever turning it on at load time.
+  # Older tmux has no indexed hooks, so it keeps the conservative skip-all-iTerm2.
+  if version_ge "${ver}" 3.0; then
+    _emit set-hook -g 'client-attached[1000]' "if-shell -F '#{client_control_mode}' 'setw -g aggressive-resize off' 'setw -g aggressive-resize on'"
+  elif [[ "${iterm}" -eq 0 ]]; then
     _emit setw -g aggressive-resize on
   fi
 
