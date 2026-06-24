@@ -7,8 +7,8 @@
 [[ -n "${_TMUX_PLUGIN_CONSTANTS_LOADED:-}" ]] && return 0
 _TMUX_PLUGIN_CONSTANTS_LOADED=1
 
-# Version of the shared template these plugins are stamped from.
-readonly TMUX_PLUGIN_TEMPLATE_VERSION="1.0.0"
+# Plugin version. Kept in sync with CHANGELOG.md and the README version badge.
+readonly SENSIBLE_REVAMPED_VERSION="1.0.1"
 
 # Default seconds a cached value stays fresh before a background refresh fires.
 # Plugins override per metric: weather is minutes, cpu is a few seconds.

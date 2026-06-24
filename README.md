@@ -4,7 +4,7 @@
 
 **Sensible tmux defaults that normalize behavior across every tmux version, OS, and terminal, without clobbering your config.**
 
-[![Tests](https://github.com/gufranco/tmux-sensible-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/gufranco/tmux-sensible-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Tests](https://github.com/gufranco/tmux-sensible-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/gufranco/tmux-sensible-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](CHANGELOG.md)
 
 </div>
 

@@ -1,0 +1,77 @@
+name: Bug Report
+description: Report a bug in tmux-sensible-revamped
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug. Please fill in the details below.
+
+  - type: input
+    id: tmux-version
+    attributes:
+      label: tmux version
+      description: Output of `tmux -V`
+      placeholder: "tmux 3.4"
+    validations:
+      required: true
+
+  - type: input
+    id: bash-version
+    attributes:
+      label: bash version
+      description: Output of `bash --version | head -1`
+      placeholder: "GNU bash, version 5.2.26"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Ubuntu/Debian
+        - Fedora/RHEL
+        - Arch Linux
+        - Other Linux
+        - WSL
+    validations:
+      required: true
+
+  - type: input
+    id: terminal
+    attributes:
+      label: Terminal emulator
+      placeholder: "Ghostty, iTerm2, Alacritty, Kitty, etc."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps to trigger the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevant tmux.conf
+      description: The tmux-sensible-revamped section of your tmux.conf
+      render: tmux

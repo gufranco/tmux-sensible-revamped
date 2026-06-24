@@ -80,3 +80,72 @@ jobs:
 
       - name: Measure coverage and enforce threshold
         run: make coverage
+
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check version consistency
+        run: |
+          src_ver=$(grep -hoE '[A-Z_]+VERSION="[0-9.]+"' src/lib/utils/constants.sh | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          cl_ver=$(grep -m1 '^## \[' CHANGELOG.md | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          readme_ver=$(grep -oE 'version-[0-9]+\.[0-9]+\.[0-9]+' README.md | head -1 | sed 's/version-//')
+          echo "constants=$src_ver changelog=$cl_ver readme=$readme_ver"
+          if [[ -z "$src_ver" ]]; then echo "FAIL: no version constant in constants.sh"; exit 1; fi
+          if [[ "$src_ver" != "$cl_ver" ]]; then
+            echo "FAIL: constants ($src_ver) != CHANGELOG ($cl_ver)"; exit 1
+          fi
+          if [[ -n "$readme_ver" && "$src_ver" != "$readme_ver" ]]; then
+            echo "FAIL: constants ($src_ver) != README badge ($readme_ver)"; exit 1
+          fi
+
+  release:
+    needs: [test, test-macos-gnu, lint, coverage, version]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine version
+        id: version
+        run: |
+          current_ver=$(grep -hoE '[A-Z_]+VERSION="[0-9.]+"' src/lib/utils/constants.sh | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          echo "current_ver=${current_ver}" >> "$GITHUB_OUTPUT"
+          if git tag -l "v${current_ver}" | grep -q .; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "v${current_ver} already tagged, skipping"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Extract changelog
+        if: steps.version.outputs.skip == 'false'
+        run: |
+          ver="${{ steps.version.outputs.current_ver }}"
+          awk "/^## \[${ver}\]/{flag=1; next} /^## \[/{flag=0} flag" CHANGELOG.md > /tmp/release-notes.md
+
+      - name: Create release
+        if: steps.version.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ver="${{ steps.version.outputs.current_ver }}"
+          repo="${GITHUB_REPOSITORY##*/}"
+          git tag -a "v${ver}" -m "v${ver}"
+          git push origin "v${ver}"
+          mkdir -p /tmp/release-staging
+          cp -r src README.md CHANGELOG.md LICENSE /tmp/release-staging/
+          cp ./*.tmux /tmp/release-staging/ 2>/dev/null || true
+          tar czf "${repo}-${ver}.tar.gz" -C /tmp/release-staging .
+          gh release create "v${ver}" --title "v${ver}" --notes-file /tmp/release-notes.md "${repo}-${ver}.tar.gz"
