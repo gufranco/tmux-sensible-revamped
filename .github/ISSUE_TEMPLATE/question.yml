@@ -6,8 +6,8 @@ body:
     attributes:
       value: |
         Before asking, please check:
-        - [README](https://github.com/gufranco/tmux-sensible-revamped#readme)
-        - [Existing issues](https://github.com/gufranco/tmux-sensible-revamped/issues?q=is%3Aissue)
+        - [README](https://github.com/tmux-revamped/tmux-sensible-revamped#readme)
+        - [Existing issues](https://github.com/tmux-revamped/tmux-sensible-revamped/issues?q=is%3Aissue)
 
   - type: textarea
     id: question

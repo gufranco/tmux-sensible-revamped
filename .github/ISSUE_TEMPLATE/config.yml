@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: README
-    url: https://github.com/gufranco/tmux-sensible-revamped#readme
+    url: https://github.com/tmux-revamped/tmux-sensible-revamped#readme
     about: Check the documentation before opening an issue

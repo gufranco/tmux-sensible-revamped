@@ -4,7 +4,7 @@
 
 **Sensible tmux defaults that normalize behavior across every tmux version, OS, and terminal, without clobbering your config.**
 
-[![Tests](https://github.com/gufranco/tmux-sensible-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/gufranco/tmux-sensible-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](CHANGELOG.md)
+[![Tests](https://github.com/tmux-revamped/tmux-sensible-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/tmux-revamped/tmux-sensible-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](CHANGELOG.md)
 
 </div>
 
@@ -12,7 +12,7 @@
 
 One config that behaves the same regardless of the tmux version, the operating system, the terminal emulator, and what is running inside the pane. Every option is gated to the tmux versions that support it, so the same plugin runs cleanly on every tmux TPM supports, from 1.9 up. Truecolor, the system clipboard, undercurl, and extended keys are enabled per detected capability, and several long-standing terminal bugs are worked around. Your own explicit settings always win.
 
-Built from [tmux-plugin-template](https://github.com/gufranco/tmux-plugin-template).
+Built from [tmux-plugin-template](https://github.com/tmux-revamped/tmux-plugin-template).
 
 <table>
 <tr>
@@ -47,7 +47,7 @@ It also carries over every default binding from upstream tmux-sensible, each set
 With [TPM](https://github.com/tmux-plugins/tpm), add to `~/.tmux.conf`:
 
 ```tmux
-set -g @plugin 'gufranco/tmux-sensible-revamped'
+set -g @plugin 'tmux-revamped/tmux-sensible-revamped'
 ```
 
 Then press `prefix + I` to install. Place it early so your own settings, sourced later, take precedence.
@@ -55,7 +55,7 @@ Then press `prefix + I` to install. Place it early so your own settings, sourced
 Manual install:
 
 ```bash
-git clone https://github.com/gufranco/tmux-sensible-revamped ~/.tmux/plugins/tmux-sensible-revamped
+git clone https://github.com/tmux-revamped/tmux-sensible-revamped ~/.tmux/plugins/tmux-sensible-revamped
 run-shell ~/.tmux/plugins/tmux-sensible-revamped/sensible-revamped.tmux
 ```
 
