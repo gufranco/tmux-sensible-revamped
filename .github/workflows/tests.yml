@@ -112,11 +112,6 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure git identity
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
       - name: Determine version
         id: version
         run: |
@@ -142,10 +137,8 @@ jobs:
         run: |
           ver="${{ steps.version.outputs.current_ver }}"
           repo="${GITHUB_REPOSITORY##*/}"
-          git tag -a "v${ver}" -m "v${ver}"
-          git push origin "v${ver}"
           mkdir -p /tmp/release-staging
           cp -r src README.md CHANGELOG.md LICENSE /tmp/release-staging/
           cp ./*.tmux /tmp/release-staging/ 2>/dev/null || true
           tar czf "${repo}-${ver}.tar.gz" -C /tmp/release-staging .
-          gh release create "v${ver}" --title "v${ver}" --notes-file /tmp/release-notes.md "${repo}-${ver}.tar.gz"
+          gh release create "v${ver}" --target "${GITHUB_SHA}" --title "v${ver}" --notes-file /tmp/release-notes.md "${repo}-${ver}.tar.gz"
