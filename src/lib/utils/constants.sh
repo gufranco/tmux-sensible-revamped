@@ -8,7 +8,7 @@
 _TMUX_PLUGIN_CONSTANTS_LOADED=1
 
 # Plugin version. Kept in sync with CHANGELOG.md and the README version badge.
-readonly SENSIBLE_REVAMPED_VERSION="1.0.1"
+readonly SENSIBLE_REVAMPED_VERSION="1.1.0"
 
 # Default seconds a cached value stays fresh before a background refresh fires.
 # Plugins override per metric: weather is minutes, cpu is a few seconds.

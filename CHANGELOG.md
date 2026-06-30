@@ -5,6 +5,43 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-06-30
+
+### Added
+
+- OSC 52 clipboard reach on tmux below 3.2 through an `Ms` terminal override for
+  terminals known to honor it, so copy works over SSH on older tmux.
+- Cursor-shape passthrough (`Ss`/`Se`) on tmux below 3.2, so vi and neovim switch
+  between block and bar cursors.
+- `tmux-direct` as the default-terminal when truecolor and its terminfo are both
+  present, for native direct color.
+- Truecolor fallback from terminfo when `COLORTERM` is unset, covering mosh and
+  some emulators.
+- `allow-passthrough all` on tmux 3.4+, keeping graphics updating in inactive
+  panes, with `on` on 3.3.
+- sixel and OSC 8 hyperlink terminal features on tmux 3.4+ for capable terminals.
+- Termux clipboard support via `termux-clipboard-set`.
+- vi copy-mode selection keys (`v`, `C-v`, `Enter`) and path-friendly
+  `word-separators`.
+- `set-titles on` and a longer `display-panes-time`, both default-aware.
+
+### Changed
+
+- Force-set options (`focus-events`, `set-clipboard`, `allow-passthrough`,
+  `status-keys`) are now applied through the default-aware setter, so an explicit
+  user value is preserved.
+- Copy bindings are version-gated: `copy-pipe-and-cancel` is emitted only on tmux
+  2.4+, and the `vi-copy`/`emacs-copy` key tables are used below it, so copy works
+  down to the 1.9 floor.
+- `screen-256color` is treated as an unconfigured default-terminal so the
+  `tmux-256color` upgrade fires.
+- Nested screen and tmux TERM values are no longer tagged truecolor, avoiding
+  garbled color inside a nested multiplexer.
+- Broadened the CSI u extended-keys allowlist to Alacritty, Contour, Rio, st, and
+  Konsole.
+- WSL clipboard prefers an X11 tool over `clip.exe` when a display is present, so
+  WSLg sessions keep UTF-8-safe copy.
+
 ## [1.0.1] - 2026-06-23
 
 ### Changed
